@@ -45,7 +45,7 @@ export class VillainsComponent implements OnInit {
   }
 
   enableAddMode() {
-    this.selected = null;
+    this.selected = <any>{};
   }
 
   getVillains() {
@@ -58,7 +58,7 @@ export class VillainsComponent implements OnInit {
   }
 
   select(villain: Villain) {
-    this.selected = <any>{};
+    this.selected = villain;
   }
 
   update(villain: Villain) {
