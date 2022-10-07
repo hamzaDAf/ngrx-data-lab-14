@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Villain } from '../../core/model';
 import { VillainService } from '../villain.service';
@@ -10,23 +11,20 @@ import { VillainService } from '../villain.service';
 })
 export class VillainsComponent implements OnInit {
   selected!: Villain | null;
-  villains!: Villain[];
-  loading!: boolean;
+  villains$: Observable<Villain[]>;
+  loading$: Observable<boolean>;
 
-  constructor(private villainService: VillainService) {}
+  constructor(private villainService: VillainService) {
+    this.villains$ = villainService.entities$;
+    this.loading$ = villainService.loading$;
+  }
 
   ngOnInit() {
     this.getVillains();
   }
 
   add(villain: Villain) {
-    this.loading = true;
-    this.villainService
-      .add(villain)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(
-        addedvillain => (this.villains = this.villains.concat(addedvillain))
-      );
+    this.villainService.add(villain);
   }
 
   close() {
@@ -34,14 +32,8 @@ export class VillainsComponent implements OnInit {
   }
 
   delete(villain: Villain) {
-    this.loading = true;
+    this.villainService.delete(villain);
     this.close();
-    this.villainService
-      .delete(villain)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(
-        () => (this.villains = this.villains.filter(h => h.id !== villain.id))
-      );
   }
 
   enableAddMode() {
@@ -49,11 +41,7 @@ export class VillainsComponent implements OnInit {
   }
 
   getVillains() {
-    this.loading = true;
-    this.villainService
-      .getAll()
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(villains => (this.villains = villains));
+    this.villainService.getAll();
     this.close();
   }
 
@@ -62,15 +50,6 @@ export class VillainsComponent implements OnInit {
   }
 
   update(villain: Villain) {
-    this.loading = true;
-    this.villainService
-      .update(villain)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(
-        () =>
-          (this.villains = this.villains.map(
-            h => (h.id === villain.id ? villain : h)
-          ))
-      );
+    this.villainService.update(villain);
   }
 }

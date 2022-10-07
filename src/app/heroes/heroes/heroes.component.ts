@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Hero } from '../../core/model';
 import { HeroService } from '../hero.service';
@@ -10,21 +11,20 @@ import { HeroService } from '../hero.service';
 })
 export class HeroesComponent implements OnInit {
   selected!: Hero | null;
-  heroes!: Hero[];
-  loading!: boolean;
+  heroes$: Observable<Hero[]>;
+  loading$: Observable<boolean>;
 
-  constructor(private heroService: HeroService) {}
+  constructor(private heroService: HeroService) {
+    this.heroes$ = heroService.entities$;
+    this.loading$ = heroService.loading$;
+  }
 
   ngOnInit() {
     this.getHeroes();
   }
 
   add(hero: Hero) {
-    this.loading = true;
-    this.heroService
-      .add(hero)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(addedHero => (this.heroes = this.heroes.concat(addedHero)));
+    this.heroService.add(hero);
   }
 
   close() {
@@ -32,14 +32,8 @@ export class HeroesComponent implements OnInit {
   }
 
   delete(hero: Hero) {
-    this.loading = true;
+    this.heroService.delete(hero);
     this.close();
-    this.heroService
-      .delete(hero)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(
-        () => (this.heroes = this.heroes.filter(h => h.id !== hero.id))
-      );
   }
 
   enableAddMode() {
@@ -47,11 +41,7 @@ export class HeroesComponent implements OnInit {
   }
 
   getHeroes() {
-    this.loading = true;
-    this.heroService
-      .getAll()
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(heroes => (this.heroes = heroes));
+    this.heroService.getAll();
     this.close();
   }
 
@@ -60,13 +50,6 @@ export class HeroesComponent implements OnInit {
   }
 
   update(hero: Hero) {
-    this.loading = true;
-    this.heroService
-      .update(hero)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(
-        () =>
-          (this.heroes = this.heroes.map(h => (h.id === hero.id ? hero : h)))
-      );
+    this.heroService.update(hero);
   }
 }
