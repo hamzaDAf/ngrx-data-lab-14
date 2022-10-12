@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { Villain } from '../../core/model';
+import { MasterDetailCommands, Villain } from '../../core';
 import { VillainService } from '../villain.service';
 
 @Component({
   selector: 'app-villains',
   templateUrl: './villains.component.html',
-  styleUrls: ['./villains.component.scss']
+  styleUrls: ['./villains.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VillainsComponent implements OnInit {
+export class VillainsComponent implements MasterDetailCommands<Villain>, OnInit {
   selected!: Villain | null;
+  commands = this;
   villains$: Observable<Villain[]>;
   loading$: Observable<boolean>;
 
@@ -32,7 +34,7 @@ export class VillainsComponent implements OnInit {
   }
 
   delete(villain: Villain) {
-    this.villainService.delete(villain);
+    this.villainService.delete(villain.id);
     this.close();
   }
 
@@ -51,5 +53,9 @@ export class VillainsComponent implements OnInit {
 
   update(villain: Villain) {
     this.villainService.update(villain);
+  }
+  
+  unselect() {
+    this.selected = null;
   }
 }

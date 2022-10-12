@@ -1,12 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Input,
-  Output
 } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Hero} from '../../core/model';
+import { Hero, MasterDetailCommands } from '../../core';
 import { ModalComponent } from '../../core/modal/modal.component';
 
 @Component({
@@ -18,36 +16,42 @@ import { ModalComponent } from '../../core/modal/modal.component';
 export class HeroListComponent {
   @Input() heroes!: Hero[];
   @Input() selectedHero!: Hero | null;
-  @Output() deleted = new EventEmitter<Hero>();
-  @Output() selected = new EventEmitter<Hero>();
+  @Input() commands!: MasterDetailCommands<Hero>;
 
-  constructor(public dialog: MatDialog) {}
 
   byId(index: number, hero: Hero) {
     return hero.id;
   }
 
-  select(hero: Hero) {
-    this.selected.emit(hero);
+  // select(hero: Hero) {
+  //   this.selected.emit(hero);
+  // }
+
+  onSelect(hero: Hero) {
+    this.commands.select(hero);
   }
 
   deleteHero(hero: Hero) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = '250px';
-    dialogConfig.data = {
-      title: 'Delete Hero',
-      message: `Do you want to delete ${hero.name}`
-    };
-
-    const dialogRef = this.dialog.open(ModalComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(deleteIt => {
-      console.log('The dialog was closed');
-      if (deleteIt) {
-        this.deleted.emit(hero);
-      }
-    });
+    this.commands.delete(hero);
   }
+
+  // deleteHero(hero: Hero) {
+  //   const dialogConfig = new MatDialogConfig();
+  //   dialogConfig.disableClose = true;
+  //   dialogConfig.autoFocus = true;
+  //   dialogConfig.width = '250px';
+  //   dialogConfig.data = {
+  //     title: 'Delete Hero',
+  //     message: `Do you want to delete ${hero.name}`
+  //   };
+
+  //   const dialogRef = this.dialog.open(ModalComponent, dialogConfig);
+
+  //   dialogRef.afterClosed().subscribe(deleteIt => {
+  //     console.log('The dialog was closed');
+  //     if (deleteIt) {
+  //       this.deleted.emit(hero);
+  //     }
+  //   });
+  // }
 }

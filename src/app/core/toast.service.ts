@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isE2E } from './e2e-check';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ToastService {
   constructor(public snackBar: MatSnackBar) {}
 

@@ -13,7 +13,7 @@ import { filter } from 'rxjs/operators';
 import { ToastService } from '../core/toast.service';
 
 /** Report ngrx-data success/error actions as toast messages * */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class NgrxDataToastService {
 
   constructor(actions$: Actions<EntityAction>, toast: ToastService) {

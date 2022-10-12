@@ -2,15 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   OnChanges,
-  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Villain } from '../../core/model';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MasterDetailCommands, Villain } from '../../core';
 
 @Component({
   selector: 'app-villain-detail',
@@ -19,14 +17,8 @@ import { Villain } from '../../core/model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VillainDetailComponent implements OnChanges {
-  @Input() villain: Villain = {
-    id: null,
-    name: '',
-    saying: ''
-  };
-  @Output() unselect = new EventEmitter<string>();
-  @Output() add = new EventEmitter<Villain>();
-  @Output() update = new EventEmitter<Villain>();
+  @Input() villain!: Villain;
+  @Input() commands!: MasterDetailCommands<Villain>;
 
   @ViewChild('name', { static: true }) nameElement!: ElementRef;
 
@@ -57,35 +49,38 @@ export class VillainDetailComponent implements OnChanges {
     }
   }
 
-  addVillain(form: FormGroup) {
-    const { value, valid, touched } = form;
-    if (touched && valid) {
-      this.add.emit({ ...this.villain, ...value });
-    }
-    this.close();
-  }
+  // addVillain(form: FormGroup) {
+  //   const { value, valid, touched } = form;
+  //   if (touched && valid) {
+  //     this.add.emit({ ...this.villain, ...value });
+  //   }
+  //   this.close();
+  // }
 
   close() {
-    this.unselect.emit();
+    this.commands.close();
   }
 
-  saveVillain(form: FormGroup) {
-    if (this.addMode) {
-      this.addVillain(form);
-    } else {
-      this.updateVillain(form);
+  saveVillain() {
+    const { dirty, valid, value } = this.form;
+    if (dirty && valid) {
+      const newVillain = { ...this.villain, ...value } as Villain;
+      this.addMode
+        ? this.commands.add(newVillain)
+        : this.commands.update(newVillain);
     }
+    this.close();
   }
 
   setFocus() {
     this.nameElement.nativeElement.focus();
   }
 
-  updateVillain(form: FormGroup) {
-    const { value, valid, touched } = form;
-    if (touched && valid) {
-      this.update.emit({ ...this.villain, ...value });
-    }
-    this.close();
-  }
+  // updateVillain(form: FormGroup) {
+  //   const { value, valid, touched } = form;
+  //   if (touched && valid) {
+  //     this.update.emit({ ...this.villain, ...value });
+  //   }
+  //   this.close();
+  // }
 }

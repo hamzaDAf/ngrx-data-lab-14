@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { Hero } from '../../core/model';
+
+import { MasterDetailCommands, Hero } from 'src/app/core';
 import { HeroService } from '../hero.service';
 
 @Component({
   selector: 'app-heroes',
   templateUrl: './heroes.component.html',
-  styleUrls: ['./heroes.component.scss']
+  styleUrls: ['./heroes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeroesComponent implements OnInit {
+export class HeroesComponent implements MasterDetailCommands<Hero>, OnInit {
   selected!: Hero | null;
   heroes$: Observable<Hero[]>;
   loading$: Observable<boolean>;
+  commands = this;
 
   constructor(private heroService: HeroService) {
     this.heroes$ = heroService.entities$;
@@ -32,7 +34,7 @@ export class HeroesComponent implements OnInit {
   }
 
   delete(hero: Hero) {
-    this.heroService.delete(hero);
+    this.heroService.delete(hero.id);
     this.close();
   }
 
@@ -51,5 +53,9 @@ export class HeroesComponent implements OnInit {
 
   update(hero: Hero) {
     this.heroService.update(hero);
+  }
+
+  unselect() {
+    this.selected = null;
   }
 }

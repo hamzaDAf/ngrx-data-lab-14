@@ -14,7 +14,8 @@ import { NgrxDataToastService } from './ngrx-data-toast.service';
     EffectsModule.forRoot([]),
     EntityDataModule.forRoot(entityConfig),
     environment.production ? [] : StoreDevtoolsModule.instrument()
-  ]
+  ],
+  providers: [NgrxDataToastService]
 })
 export class AppStoreModule {
   constructor(toastService: NgrxDataToastService) {}

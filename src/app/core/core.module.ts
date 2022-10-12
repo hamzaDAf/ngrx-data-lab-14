@@ -5,6 +5,7 @@ import { MaterialModule } from '../material/material.module';
 import { SharedModule } from '../shared/shared.module';
 import { ModalComponent } from './modal/modal.component';
 import { throwIfAlreadyLoaded } from './module-import-check';
+import { ToastService } from './toast.service';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
   ],
   declarations: [ModalComponent, ToolbarComponent],
   exports: [ToolbarComponent],
-  entryComponents: [ModalComponent]
+  entryComponents: [ModalComponent],
+  providers: [ToastService]
 })
 export class CoreModule {
   constructor(

@@ -3,9 +3,9 @@ import {
   EntityCollectionServiceBase,
   EntityCollectionServiceElementsFactory
 } from '@ngrx/data';
-import { Villain } from '../core/model';
+import { Villain } from '../core';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class VillainService extends EntityCollectionServiceBase<Villain> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Villain', serviceElementsFactory);

@@ -1,5 +1,5 @@
 export class Villain {
-  id!: number | null;
+  id!: number;
   name!: string;
   saying!: string;
 }
